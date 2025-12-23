@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Creative developer exploring games, systems and interaction."
+    />
+    <title>Bea Porfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div class="layout">
+      <div class="menu-wrapper">
+        <button
+          id="menuToggle"
+          class="btn-base btn-menu"
+          aria-label="Open menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="icon"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span id="menutxt">Menu</span>
+        </button>
+        <div class="menu hidden">
+          <button id="about-btn" class="btn-base btn">About</button>
+          <button id="projects-btn" class="btn-base btn">Porftolio</button>
+          <button id="contacts-btn" class="btn-base btn">Contacts</button>
+        </div>
+      </div>
+      <main id="container">
+        <section id="about" class="panel hidden">
+          <h2>About me</h2>
+          <p>Hi, I’m Beatriz — welcome to my space.</p>
+          <p>
+            I like exploring ideas through code, focusing on logic, structure
+            and interaction. I enjoy building small systems, organising code,
+            defining behaviours and experimenting with movement and
+            responsiveness.
+          </p>
+          <p>
+            I’m curious by nature and enjoy working in a way where structure and
+            creativity coexist. This space reflects that process —
+            experimenting, learning and refining ideas as I go.
+          </p>
+        </section>
+
+        <section id="portfolio" class="panel hidden">
+          <!-- projetos -->
+        </section>
+        <section id="contacts" class="panel hidden">
+          <!-- contactos -->
+        </section>
+      </main>
+    </div>
+    <p class="signature">Beatriz Andrade</p>
+    <script src="particles.js"></script>
+  </body>
+</html>
