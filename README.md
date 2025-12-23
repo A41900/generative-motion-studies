@@ -1,5 +1,7 @@
 # 🌸 Creative Landing Page — Generative Particles
 
+demo here: https://a41900.github.io/portfolio-landing/
+
 This repository contains my personal landing page.
 It started as a simple idea and slowly became a space where I explore generative visuals, interaction and code structure using JavaScript and Canvas.
 I researched generative art and particle systems, looked at existing approaches, and then built my own variation through experimentation. The goal was never to copy an existing solution, but to understand how these systems behave and shape something personal from that understanding.
