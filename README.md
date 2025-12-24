@@ -1,14 +1,16 @@
-# 🌸 Creative Landing Page — Generative Particles
+# 🌸 Generative Motion Studies
 
-demo here: https://a41900.github.io/portfolio-landing/
+Live demo here: https://a41900.github.io/generative-motion-studies/
 
-This repository contains my personal landing page.
-It started as a simple idea and slowly became a space where I explore generative visuals, interaction and code structure using JavaScript and Canvas.
-I researched generative art and particle systems, looked at existing approaches, and then built my own variation through experimentation. The goal was never to copy an existing solution, but to understand how these systems behave and shape something personal from that understanding.
-At this point, the project reached a stable version. Many ideas were happening at once, and instead of continuing to add more, I decided to freeze this iteration as a reference point.
-This version represents a moment in the project where the system works, even if it is not finished. I plan to keep evolving it in future iterations, with more intention and clarity, but this snapshot matters to me as part of the process.
+This repository contains a set of generative motion and particle system studies built with JavaScript and Canvas.
 
-The project serves both as a landing page and as a portfolio piece.
+It originally started as a creative landing page. As development progressed, more interactions, effects and ideas were added, and the project slowly shifted from focusing on visual output to understanding how motion systems are structured and behave.
+
+At a certain point, it became clear that the most valuable part of the project was no longer the landing page itself, but the exploration behind it. Because of that, the project was intentionally migrated into a study-focused repository.
+
+This is not a finished product. It exists as a space to explore particle systems, motion logic, abstraction and generative behaviour through simple rules. The visual results are a consequence of that process, not the main goal.
+
+This repository now serves as a foundation for future visual projects, such as landing pages and interactive pieces. Development notes and reflections are documented in the devlog, and the system is designed to be modular and reusable across different contexts.
 
 ---
 
