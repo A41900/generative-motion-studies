@@ -52,7 +52,6 @@ const constellation = new ConstellationEffect({
 scene.add(constellation);
 
 function animate(time) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   scene.update(1); // dt = 1 por agora
   scene.draw(ctx);

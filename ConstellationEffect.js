@@ -65,6 +65,14 @@ export class ConstellationEffect {
   }
 
   resize(width, height) {
+    const sx = width / this.width;
+    const sy = height / this.height;
+
+    for (const p of this.particles) {
+      p.x *= sx;
+      p.y *= sy;
+    }
+
     this.width = width;
     this.height = height;
   }
