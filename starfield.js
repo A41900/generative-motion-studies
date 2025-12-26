@@ -76,6 +76,19 @@ export class StarfieldEffect {
 
     ctx.restore();
 
+    ctx.save();
+    ctx.globalCompositeOperation = "overlay";
+    ctx.globalAlpha = 0.04;
+
+    for (let i = 0; i < width * height * 0.001; i++) {
+      const x = rand() * width;
+      const y = rand() * height;
+      ctx.fillStyle = "rgba(255,255,255,1)";
+      ctx.fillRect(x, y, 1, 1);
+    }
+
+    ctx.restore();
+
     // STARS
     ctx.save();
     ctx.globalCompositeOperation = "screen";
