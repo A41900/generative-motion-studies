@@ -50,12 +50,12 @@ export class FlowField {
     const mouseStrength = 100; // quão forte é o desvio (não atração)
 
     for (const p of this.particles) {
-      // 1️⃣ FLOW BASE (sempre ativo)
+      // FLOW BASE (sempre ativo)
       const flow = guidedFlowField(p, t);
       let nx = flow.nx;
       let ny = flow.ny;
 
-      // 2️⃣ INFLUÊNCIA DO RATO (local e suave)
+      // INFLUÊNCIA DO RATO (local e suave)
       if (this.mouse) {
         const dx = this.mouse.x - p.x;
         const dy = this.mouse.y - p.y;
@@ -70,22 +70,22 @@ export class FlowField {
         }
       }
 
-      // 3️⃣ NORMALIZA (crítico!)
+      // normalizar
       const mag = Math.hypot(nx, ny) || 1;
       nx /= mag;
       ny /= mag;
 
-      // 4️⃣ VELOCIDADE FINAL (depende da depth)
+      // VELOCIDADE FINAL (depende da depth)
       const speed = 20 + p.depth * 80;
 
       p.vx = nx * speed;
       p.vy = ny * speed;
 
-      // 5️⃣ MOVE
+      // MOVE
       p.x += p.vx * dt;
       p.y += p.vy * dt;
 
-      // 6️⃣ WRAP
+      // WRAP
       if (p.x < 0) p.x += this.width;
       if (p.y < 0) p.y += this.height;
       if (p.x > this.width) p.x -= this.width;
@@ -95,7 +95,7 @@ export class FlowField {
 
   draw(ctx) {
     ctx.save();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
 
     for (const p of this.particles) {
       const noise3D = createNoise3D();

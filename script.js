@@ -20,8 +20,6 @@ function toggleMenu() {
   const menu = document.querySelector(".menu");
   menu.classList.toggle("hidden");
 }
-const aboutBtn = document.getElementById("about-btn");
-aboutBtn.addEventListener("click", showAbout);
 
 const effect1 = document.getElementById("effect1-btn");
 effect1.addEventListener("click", () => {
@@ -35,8 +33,8 @@ const effect2 = document.getElementById("effect2-btn");
 effect2.addEventListener("click", () => {
   clearCanvas();
   scene.removeAll();
-  window.effects.stream.resize(viewWidth, viewHeight);
-  scene.add(window.effects.stream);
+  window.effects.flowfield.resize(viewWidth, viewHeight);
+  scene.add(window.effects.flowfield);
 });
 
 const effect3 = document.getElementById("effect3-btn");
@@ -48,12 +46,7 @@ effect3.addEventListener("click", () => {
   scene.add(window.effects.starfield, window.effects.stars);
 });
 
-function showAbout() {
-  const container = document.getElementById("about");
-  container.classList.toggle("hidden");
-}
-
-let smoke, stream, starfield, stars, flowField;
+let smoke, stream, starfield, stars, flowfield;
 
 function init() {
   scene = new Scene();
@@ -80,11 +73,11 @@ function init() {
     height: viewHeight,
   });
 
-  flowField = new FlowField({ width: viewWidth, height: viewHeight });
+  flowfield = new FlowField({ width: viewWidth, height: viewHeight });
 
-  scene.add(flowField);
+  scene.add(stream);
 
-  window.effects = { smoke, stream, starfield, stars };
+  window.effects = { smoke, stream, starfield, stars, flowfield };
   lastTime = performance.now();
   requestAnimationFrame(animate);
 }
@@ -133,3 +126,19 @@ function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
 }
+
+const buttons = document.querySelectorAll(".menu .btn");
+const panels = document.querySelectorAll(".panel");
+
+buttons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    buttons.forEach((b) => b.classList.remove("active"));
+    panels.forEach((panel) => panel.classList.add("hidden"));
+    btn.classList.add("active");
+    const id = btn.id.replace("-btn", "");
+    const panel = document.getElementById(id);
+    if (panel) {
+      panel.classList.remove("hidden");
+    }
+  });
+});

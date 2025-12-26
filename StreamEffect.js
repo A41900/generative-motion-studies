@@ -31,7 +31,7 @@ export class StreamEffect {
     }
   }
 
-  // 👉 define as DUAS correntes
+  // efine as DUAS correntes
   spawnOnStream(lane) {
     const x = Math.random() * this.width;
 
