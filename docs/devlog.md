@@ -36,3 +36,32 @@ Podemos dizer que cheguei a um flow básico no update para cada efeito (que pode
 
 KEY POINT (cheat): Fields dizem “para onde”; Forces dizem “quanto”; Integrate diz “agora”; Damp diz “quanto sobra” e Constraints dizem “não podes”.
 O projeto inicialmente que era uma landing page passou a ser um estudo sobre como estruturar objetivamente um conceito abstrato sem entrar em rabbit holes, manter a estrutura, compreender a física, dividir e modularizar as funções para serem usadas depois.
+
+Energia (jitter / noise / flow)
+tenta tirar a partícula do sítio
+quanto maior → mais ela se afasta
+é a fonte do movimento
+
+Força (strength do radialField)
+tenta trazer a partícula de volta
+quanto maior → retorno mais rápido
+é o “elástico”
+
+Damping
+mata velocidade ao longo do tempo
+quanto mais alto → movimento morre rápido
+controla “quão viva” a coisa parece
+
+# 25 / 12
+
+Mais uma vez, tudo escalou e em vez de simplificar, compliquei.
+
+Sempre que tento "organizar" as coisas acabo por me perder e o que começou com uma tentativa de simplicação acabou por se tornar algo chato e complicado. Comecei a questionar cada função em "dynamics": "porquê este parâmetro?" "qual a escala real deste valor?" "isto vai de 0 a 1? de -1 a 1? de 0 a 100?".
+Os chamados “números mágicos” começaram a irritar-me profundamente. Fazer debug tornou-se exaustivo porque eu própria já não tinha uma percepção clara de qual era a unidade mental de cada função. Foi então que nasceu a ideia de um contracto. A noção de engine contract não surgiu por vaidade nem por ambição de framework, mas por necessidade: eu precisava de um padrão que me permitisse olhar para uma função e saber imediatamente em que espaço ela opera, quais são as suas unidades e que tipo de efeito produz. A escolha de wavelength como unidade de escala espacial veio exatamente daí — não porque seja “mais correta”, mas porque é mais compreensível conceptualmente do que um número arbitrário entre 0 e 1. Sim, provavelmente é overkill. Mas foi overkill por frustração.
+Durante este processo tornou-se também evidente que o ficheiro dynamics estava a concentrar demasiados conceitos diferentes. Havia uma mistura constante entre: lógica física e lógica visual. Como resposta a isso, dissolvi dynamics em dois ficheiros distintos: physics e visuals. Não porque o sistema “precisasse”, mas porque eu precisava dessa separação para voltar a pensar com clareza. O problema é que esta minha necessidade de compreender tudo de forma exaustiva fez-me descer vários níveis conceptuais de uma vez. Ao questionar tudo com tanta rigidez, acabei por atrasar o processo e afastar-me do objetivo inicial. Neste momento já nem sei se tudo faz sentido do ponto de vista prático... enfim. Finalmente introduzi delta time real no sistema. Isso resolve um problema estrutural antigo e traz consistência entre máquinas, mesmo que o custo cognitivo tenha sido alto.
+Neste ponto, tornou-se claro que o projeto já não é uma coisa só. A landing page e o estudo de motion estão a puxar em direções diferentes. Para evitar que isto continue a escalar indefinidamente, decidi extrair a landing page para um projeto separado neste commit. Não é a solução ideal, mas é a solução que tenho por agora.
+
+      const flow = spaceDriftField(p, this.time, 50);
+      applyFieldAsDisplacement(p, flow, 8 + p.depth * 18, dt);
+
+      if (d < connectionRadius) drawLine()

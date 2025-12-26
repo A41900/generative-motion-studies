@@ -1,6 +1,7 @@
-import { Scene } from "./Scene.js";
-import { ConstellationEffect } from "./ConstellationEffect.js";
-import { TextEffect } from "./TextEffect.js";
+import { Scene } from "./core/Scene.js";
+import { ConstellationEffect } from "./effects/ConstellationEffect.js";
+import { TextEffect } from "./effects/TextEffect.js";
+import { BubbleEffect } from "./effects/BubbleEffect.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -43,22 +44,27 @@ function showAbout() {
 
 const scene = new Scene();
 
-const constellation = new ConstellationEffect({
-  width: canvas.width,
-  height: canvas.height,
-  count: 300,
-});
+const constellation = new ConstellationEffect({ canvas: canvas, count: 300 });
+const text = new TextEffect({ canvas: canvas, text: "a creative space" });
+const bubble = new BubbleEffect({ canvas: canvas });
 
 scene.add(constellation);
 
+let lastTime = performance.now();
+
 function animate(time) {
+  const deltaMs = time - lastTime;
+  lastTime = time;
+
+  // dt em segundos, com clamp de segurança
+  const dt = Math.min(deltaMs / 1000, 0.033);
   drawBackground();
-  scene.update(1); // dt = 1 por agora
+  scene.update(dt); // dt = 1 por agora
   scene.draw(ctx);
   requestAnimationFrame(animate);
 }
 
-animate();
+requestAnimationFrame(animate);
 
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;

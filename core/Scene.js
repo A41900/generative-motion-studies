@@ -5,8 +5,8 @@ export class Scene {
   }
 
   // adiciona um efeito (ConstellationEffect, TextEffect, etc.)
-  add(effect) {
-    this.effects.push(effect);
+  add(...effect) {
+    this.effects.push(...effect);
   }
 
   // remove um efeito
