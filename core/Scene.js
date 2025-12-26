@@ -43,9 +43,9 @@ export class Scene {
   }
 
   // resize global
-  resize(canvas) {
+  resize(width, height) {
     for (const effect of this.effects) {
-      effect.resize?.(canvas);
+      effect.resize?.(width, height);
     }
   }
 }

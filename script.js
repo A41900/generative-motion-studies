@@ -2,6 +2,11 @@ import { Scene } from "./core/Scene.js";
 import { ConstellationEffect } from "./effects/ConstellationEffect.js";
 import { StarfieldEffect } from "./starfield.js";
 
+let viewWidth = 0;
+let viewHeight = 0;
+let scene;
+let lastTime = 0;
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -20,30 +25,44 @@ function showAbout() {
   container.classList.toggle("hidden");
 }
 
-let scene;
-let lastTime = 0;
-
 function init() {
   resizeCanvas();
   scene = new Scene();
-  let starfield = new StarfieldEffect(canvas, {
+
+  let starfield = new StarfieldEffect(viewWidth, viewHeight, {
     stars: 1600,
     brightStars: 40,
     nebulaBlobs: 20,
     dust: 220,
     //seed: 1234,
   });
-  //let ConstellationEffect = new ConstellationEffect({ canvas, count: 300 });
-  scene.add(starfield);
+  let stars = new ConstellationEffect({
+    width: viewWidth,
+    height: viewHeight,
+  });
+  scene.add(starfield, stars);
 
   lastTime = performance.now();
   requestAnimationFrame(animate);
 }
 
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+
+  viewWidth = window.innerWidth;
+  viewHeight = window.innerHeight;
+
+  canvas.style.width = viewWidth + "px";
+  canvas.style.height = viewHeight + "px";
+
+  canvas.width = Math.floor(viewWidth * dpr);
+  canvas.height = Math.floor(viewHeight * dpr);
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  if (scene) scene.resize(viewWidth, viewHeight);
 }
+
 function animate(time) {
   const deltaMs = time - lastTime;
   lastTime = time;
@@ -55,9 +74,7 @@ function animate(time) {
 }
 
 window.addEventListener("resize", () => {
-  if (!scene) return;
   resizeCanvas();
-  scene.resize(canvas);
 });
 
 window.addEventListener("mousemove", (e) => {

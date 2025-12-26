@@ -1,12 +1,16 @@
 import { starfield } from "../bg.js";
 import { Particle } from "../core/Particle.js";
-import { radialField, spaceDriftField } from "../fields/fields.js";
+import {
+  radialField,
+  spaceCurlField,
+  spaceDriftField,
+} from "../fields/fields.js";
 import { applyFieldAsDisplacement } from "../motion/visuals.js";
 
 export class ConstellationEffect {
-  constructor({ canvas, count = 300, connectionRadius = 65 }) {
-    this.width = canvas.width;
-    this.height = canvas.height;
+  constructor({ width, height, count = 300, connectionRadius = 30 }) {
+    this.width = width;
+    this.height = height;
     this.connectionRadius = connectionRadius;
 
     this.mouse = null;
@@ -33,7 +37,7 @@ export class ConstellationEffect {
     this.time += dt;
 
     for (const p of this.particles) {
-      const flow = spaceDriftField(p, this.time, 50);
+      const flow = spaceCurlField(p, this.time, 1400);
 
       applyFieldAsDisplacement(p, flow, 8 + p.depth * 18, dt);
 
@@ -87,16 +91,17 @@ export class ConstellationEffect {
       ctx.fill();
     }
   }
+  resize(width, height) {
+    const sx = width / this.width;
+    const sy = height / this.height;
 
-  resize(canvas) {
-    const sx = canvas.width / this.width;
-    const sy = canvas.height / this.height;
     for (const p of this.particles) {
       p.x *= sx;
       p.y *= sy;
     }
-    this.width = canvas.width;
-    this.height = canvas.height;
+
+    this.width = width;
+    this.height = height;
   }
 
   onMouseMove(pos) {

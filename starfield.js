@@ -1,9 +1,5 @@
 export class StarfieldEffect {
-  constructor(canvas, opts = {}) {
-    this.width = canvas.width;
-    this.height = canvas.height;
-    this.enabled = true;
-
+  constructor(width, height, opts = {}) {
     this.opts = {
       stars: 1400,
       brightStars: 35,
@@ -12,6 +8,9 @@ export class StarfieldEffect {
       seed: Math.random() * 10_000,
       ...opts,
     };
+    this.width = width;
+    this.height = height;
+    this.enabled = true;
 
     this.build();
   }
@@ -101,9 +100,9 @@ export class StarfieldEffect {
     ctx.drawImage(this.canvas, 0, 0);
   }
 
-  resize(canvas) {
-    this.width = canvas.width;
-    this.height = canvas.height;
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
     this.build();
   }
 }
