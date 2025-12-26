@@ -1,13 +1,6 @@
 import { starfield } from "../bg.js";
 import { Particle } from "../core/Particle.js";
-import {
-  radialField,
-  flowField,
-  spaceDriftField,
-  spaceCurlField,
-  vortexTowardsTarget,
-  noiseField,
-} from "../fields/fields.js";
+import { radialField, spaceDriftField } from "../fields/fields.js";
 import { applyFieldAsDisplacement } from "../motion/visuals.js";
 
 export class ConstellationEffect {
@@ -22,14 +15,6 @@ export class ConstellationEffect {
     this.particles = [];
 
     const INITIAL_SPEED = 10; // px/s
-
-    this.bg = starfield(this.width, this.height, {
-      stars: 1600,
-      brightStars: 40,
-      nebulaBlobs: 20,
-      dust: 220,
-      seed: 1234, // muda isto para outro look (ou remove)
-    });
 
     for (let i = 0; i < count; i++) {
       this.particles.push(
@@ -76,7 +61,6 @@ export class ConstellationEffect {
 
   draw(ctx) {
     // 🔗 CONNECT
-    ctx.drawImage(this.bg, 0, 0);
     for (let i = 0; i < this.particles.length; i++) {
       for (let j = i + 1; j < this.particles.length; j++) {
         const a = this.particles[i];
@@ -104,17 +88,15 @@ export class ConstellationEffect {
     }
   }
 
-  resize(width, height) {
-    const sx = width / this.width;
-    const sy = height / this.height;
-
+  resize(canvas) {
+    const sx = canvas.width / this.width;
+    const sy = canvas.height / this.height;
     for (const p of this.particles) {
       p.x *= sx;
       p.y *= sy;
     }
-
-    this.width = width;
-    this.height = height;
+    this.width = canvas.width;
+    this.height = canvas.height;
   }
 
   onMouseMove(pos) {

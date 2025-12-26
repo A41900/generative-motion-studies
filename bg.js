@@ -1,4 +1,3 @@
-// backgrounds/starfield.js
 export function starfield(width, height, opts = {}) {
   const {
     stars = 1400,

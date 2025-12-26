@@ -5,7 +5,6 @@ class Effect {
     // EFFECTS VAO EXTENDS EFFECT.
     this.enabled = true;
   }
-
   update(dt) {}
   draw(ctx) {}
   resize(w, h) {}
