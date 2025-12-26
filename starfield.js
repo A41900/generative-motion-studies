@@ -23,6 +23,7 @@ export class StarfieldEffect {
     c.height = height;
     const ctx = c.getContext("2d");
 
+    // rng
     let s = this.opts.seed;
     const rand = () => {
       s = (s * 1664525 + 1013904223) % 4294967296;
@@ -76,22 +77,15 @@ export class StarfieldEffect {
 
     ctx.restore();
 
-    ctx.save();
-    ctx.globalCompositeOperation = "overlay";
-    ctx.globalAlpha = 0.04;
+    // ── NOISE (DITHER) ────────────────────
+    //const noise = createNoise(width, height);
+    //ctx.globalCompositeOperation = "normal";
+    //ctx.drawImage(noise, 0, 0);
 
-    for (let i = 0; i < width * height * 0.001; i++) {
-      const x = rand() * width;
-      const y = rand() * height;
-      ctx.fillStyle = "rgba(255,255,255,1)";
-      ctx.fillRect(x, y, 1, 1);
-    }
-
-    ctx.restore();
-
-    // STARS
+    // ── STARS ────────────────────────────
     ctx.save();
     ctx.globalCompositeOperation = "screen";
+
     for (let i = 0; i < this.opts.stars; i++) {
       const x = rand() * width;
       const y = rand() * height;
@@ -154,4 +148,22 @@ function drawNebulaLayer({
     ctx.fillStyle = grad;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
   }
+}
+
+function createNoise(width, height) {
+  const c = document.createElement("canvas");
+  c.width = width;
+  c.height = height;
+  const ctx = c.getContext("2d");
+
+  const img = ctx.createImageData(width, height);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255;
+    img.data[i] = v;
+    img.data[i + 1] = v;
+    img.data[i + 2] = v;
+    img.data[i + 3] = 18; // alpha baixo mas REAL
+  }
+  ctx.putImageData(img, 0, 0);
+  return c;
 }

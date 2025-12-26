@@ -10,6 +10,12 @@ export class Particle {
     this.x = x;
     this.y = y;
 
+    this.prevX = this.x;
+    this.prevY = this.y;
+
+    this.path = []; // <<< AQUI ESTÁ O FUMO
+    this.maxPath = 60;
+
     // estado físico
     this.vx = vx;
     this.vy = vy;
@@ -45,6 +51,8 @@ export class Particle {
    * - aplica aceleração e atualiza posição
    */
   integrate(dt) {
+    this.prevX = this.x;
+    this.prevY = this.y;
     // aceleração = força / massa
     this.vx += (this.fx / this.mass) * dt;
     this.vy += (this.fy / this.mass) * dt;
@@ -80,5 +88,16 @@ export class Particle {
   lerpTo(x, y, t) {
     this.x += (x - this.x) * t;
     this.y += (y - this.y) * t;
+  }
+  syncPrev() {
+    this.prevX = this.x;
+    this.prevY = this.y;
+  }
+
+  addPoint(x, y) {
+    this.path.push({ x, y });
+    if (this.path.length > this.maxPath) {
+      this.path.shift();
+    }
   }
 }

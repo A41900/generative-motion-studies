@@ -24,8 +24,13 @@ export class Scene {
   // draw global
   draw(ctx) {
     for (const effect of this.effects) {
+      if (effect.preDraw) effect.preDraw(ctx);
       effect.draw?.(ctx);
     }
+  }
+
+  removeAll() {
+    this.effects = [];
   }
 
   // propaga mouse move (opcional)

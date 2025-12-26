@@ -26,6 +26,58 @@ export function flowField(p, time = 0, wavelengthPx = 500) {
     strength: 1,
   };
 }
+export function pseudoFlowField(p, time) {
+  const scale = 0.002;
+  const t = time * 0.0005;
+
+  const ax = Math.sin(p.x * scale + t);
+  const ay = Math.cos(p.y * scale - t * 1.3);
+
+  const angle = Math.atan2(ay, ax);
+
+  return {
+    nx: Math.cos(angle),
+    ny: Math.sin(angle),
+    strength: 1,
+  };
+}
+
+export function guidedFlowField(p) {
+  const scaleX = 0.002; // controla largura da onda
+  const amplitude = 120; // altura da curva
+  const wavelength = 800;
+
+  // curva base (linha vermelha)
+  const yCurve = amplitude * Math.sin((p.x / wavelength) * Math.PI * 2);
+
+  // derivada da curva → direção tangente
+  const dy_dx =
+    ((amplitude * Math.PI * 2) / wavelength) *
+    Math.cos((p.x / wavelength) * Math.PI * 2);
+
+  // vetor tangente (1, dy/dx)
+  const angle = Math.atan2(dy_dx, 1);
+
+  return {
+    nx: Math.cos(angle),
+    ny: Math.sin(angle),
+    strength: 1,
+  };
+}
+
+export function ribbonField(p, time) {
+  const scale = 0.001;
+  const t = time * 0.05;
+
+  const nx = Math.sin((p.y + t) * scale * 2);
+  const ny = Math.cos((p.x + t) * scale * 2);
+
+  return {
+    nx,
+    ny,
+    strength: 40 * (0.3 + p.depth),
+  };
+}
 
 export function noiseField(p, time, wavelengthPx = 250) {
   const scale = (2 * Math.PI) / wavelengthPx;

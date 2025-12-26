@@ -1,6 +1,9 @@
 import { Scene } from "./core/Scene.js";
 import { ConstellationEffect } from "./effects/ConstellationEffect.js";
 import { StarfieldEffect } from "./starfield.js";
+import { FlowField } from "./Flowfield.js";
+import { StreamEffect } from "./StreamEffect.js";
+import { SmokeEffect } from "./smoke.js";
 
 let viewWidth = 0;
 let viewHeight = 0;
@@ -20,28 +23,68 @@ function toggleMenu() {
 const aboutBtn = document.getElementById("about-btn");
 aboutBtn.addEventListener("click", showAbout);
 
+const effect1 = document.getElementById("effect1-btn");
+effect1.addEventListener("click", () => {
+  clearCanvas();
+  scene.removeAll();
+  window.effects.smoke.resize(viewWidth, viewHeight);
+  scene.add(window.effects.smoke);
+});
+
+const effect2 = document.getElementById("effect2-btn");
+effect2.addEventListener("click", () => {
+  clearCanvas();
+  scene.removeAll();
+  window.effects.stream.resize(viewWidth, viewHeight);
+  scene.add(window.effects.stream);
+});
+
+const effect3 = document.getElementById("effect3-btn");
+effect3.addEventListener("click", () => {
+  clearCanvas();
+  scene.removeAll();
+  window.effects.starfield.resize(viewWidth, viewHeight);
+  window.effects.stars.resize(viewWidth, viewHeight);
+  scene.add(window.effects.starfield, window.effects.stars);
+});
+
 function showAbout() {
   const container = document.getElementById("about");
   container.classList.toggle("hidden");
 }
 
-function init() {
-  resizeCanvas();
-  scene = new Scene();
+let smoke, stream, starfield, stars, flowField;
 
-  let starfield = new StarfieldEffect(viewWidth, viewHeight, {
+function init() {
+  scene = new Scene();
+  resizeCanvas();
+
+  smoke = new SmokeEffect(viewWidth, viewHeight);
+
+  stream = new StreamEffect({
+    width: viewWidth,
+    height: viewHeight,
+    count: 600,
+    speed: 140,
+  });
+
+  starfield = new StarfieldEffect(viewWidth, viewHeight, {
     stars: 1600,
     brightStars: 40,
     nebulaBlobs: 20,
     dust: 220,
-    //seed: 1234,
   });
-  let stars = new ConstellationEffect({
+
+  stars = new ConstellationEffect({
     width: viewWidth,
     height: viewHeight,
   });
-  scene.add(starfield, stars);
 
+  flowField = new FlowField({ width: viewWidth, height: viewHeight });
+
+  scene.add(flowField);
+
+  window.effects = { smoke, stream, starfield, stars };
   lastTime = performance.now();
   requestAnimationFrame(animate);
 }
@@ -68,6 +111,7 @@ function animate(time) {
   lastTime = time;
   // dt em segundos, com clamp de segurança
   const dt = Math.min(deltaMs / 1000, 0.033);
+
   scene.update(dt); // dt = 1 por agora
   scene.draw(ctx);
   requestAnimationFrame(animate);
@@ -82,3 +126,10 @@ window.addEventListener("mousemove", (e) => {
 });
 
 init();
+
+function clearCanvas() {
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
