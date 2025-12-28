@@ -1,4 +1,4 @@
-import { starfield } from "../bg.js";
+import { starfield } from "./bg.js";
 import { Particle } from "../core/Particle.js";
 import {
   flowField,

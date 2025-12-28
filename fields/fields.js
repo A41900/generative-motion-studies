@@ -26,6 +26,7 @@ export function flowField(p, time = 0, wavelengthPx = 500) {
     strength: 1,
   };
 }
+
 export function pseudoFlowField(p, time) {
   const scale = 0.002;
   const t = time * 0.0005;
@@ -202,4 +203,17 @@ export function randomTemporalField(p, time) {
     fx: Math.cos(angle) * strength,
     fy: Math.sin(angle) * strength,
   };
+}
+
+export function mixFields(fields, weights) {
+  let x = 0;
+  let y = 0;
+
+  for (let i = 0; i < fields.length; i++) {
+    x += fields[i].nx * weights[i];
+    y += fields[i].ny * weights[i];
+  }
+
+  const mag = Math.hypot(x, y) || 1;
+  return { nx: x / mag, ny: y / mag };
 }

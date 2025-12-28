@@ -1,7 +1,7 @@
 // ParticleStreamEffect.js
-import { Particle } from "./core/Particle.js";
+import { Particle } from "../core/Particle.js";
 import { guidedFlowField } from "./Flowfield.js";
-import { applyFieldAsDisplacement } from "./motion/visuals.js";
+import { applyFieldAsDisplacement } from "../motion/visuals.js";
 export class StreamEffect {
   constructor({ width, height, count = 400, speed = 120 }) {
     this.width = width;

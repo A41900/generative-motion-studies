@@ -2,10 +2,10 @@
 // Effect de DEBUG: desenha uma grid de vetores
 // onde a direção segue uma "corrente" curva global
 
-import { applyFieldAsDisplacement, softAttract } from "./motion/visuals.js";
-import { Particle } from "./core/Particle.js";
-import { radialField } from "./fields/fields.js";
-import { createNoise3D } from "./simplex-noise.js";
+import { applyFieldAsDisplacement, softAttract } from "../motion/visuals.js";
+import { Particle } from "../core/Particle.js";
+import { radialField } from "../fields/fields.js";
+import { createNoise3D } from "../fields/simplex-noise.js";
 
 export class FlowField {
   constructor({ width, height, cellSize = 30, vectorLength = 14 }) {
