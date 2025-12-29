@@ -76,7 +76,7 @@ export function ribbonField(p, time) {
   return {
     nx,
     ny,
-    strength: 40 * (0.3 + p.depth),
+    strength: 0.3 + p.depth,
   };
 }
 
@@ -127,6 +127,7 @@ export function waveField(p, origin, phase, wavelengthPx = 300) {
   };
 }
 
+//hybrid field
 export function vortexTowardsTarget(p, target, strength = 1) {
   const dx = target.x - p.x;
   const dy = target.y - p.y;
@@ -187,7 +188,7 @@ export function spaceCurlField(p, time, wavelengthPx = 1200) {
   };
 }
 
-export function randomTemporalField(p, time) {
+export function randomTemporalField10(p, time) {
   // cada partícula tem o seu ritmo
   const speed = 0.3 + p.seed * 1.2;
 

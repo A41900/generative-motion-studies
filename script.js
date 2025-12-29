@@ -3,6 +3,7 @@ import { ConstellationEffect } from "./effects/ConstellationEffect.js";
 import { StarfieldEffect } from "./effects/starfield.js";
 import { FlowField } from "./effects/Flowfield.js";
 import { StreamEffect } from "./effects/StreamEffect.js";
+import { SmokeEffectNew } from "./effects/SmokeEffecNew.js";
 import { SmokeEffect } from "./effects/SmokeEffect.js";
 
 let viewWidth = 0;
@@ -46,13 +47,21 @@ effect3.addEventListener("click", () => {
   scene.add(window.effects.starfield, window.effects.stars);
 });
 
-let smoke, stream, starfield, stars, flowfield;
+const effect4 = document.getElementById("effect4-btn");
+effect4.addEventListener("click", () => {
+  clearCanvas();
+  scene.removeAll();
+  window.effects.effectSmoke.resize(viewWidth, viewHeight);
+  scene.add(window.effects.effect4);
+});
+
+let smoke, stream, starfield, stars, flowfield, effectSmoke;
 
 function init() {
   scene = new Scene();
   resizeCanvas();
 
-  smoke = new SmokeEffect(viewWidth, viewHeight);
+  smoke = new SmokeEffectNew(viewWidth, viewHeight);
 
   stream = new StreamEffect({
     width: viewWidth,
@@ -72,6 +81,8 @@ function init() {
     width: viewWidth,
     height: viewHeight,
   });
+
+  effectSmoke = new Effect3(viewWidth, viewHeight);
 
   flowfield = new FlowField({ width: viewWidth, height: viewHeight });
 

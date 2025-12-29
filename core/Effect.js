@@ -1,30 +1,51 @@
 import { Particle } from "./Particle.js";
+
 export class Effect {
   constructor(width, height) {
     this.width = width;
     this.height = height;
+
     this.time = 0;
     this.particles = [];
-    this.zIndex = null;
-    this.opacity = null;
     this.enabled = true;
   }
+
   createParticles(count) {
-    for (let i = 0; i < 400; i++) {
-      this.particles.push(
-        new Particle({
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          radius: 1,
-        })
-      );
+    for (let i = 0; i < count; i++) {
+      this.particles.push(this.spawnParticle());
     }
   }
-  disable() {
-    this.enabled = false;
+
+  spawnParticle() {
+    return new Particle({
+      x: Math.random() * this.width,
+      y: Math.random() * this.height,
+      radius: 1,
+    });
+  }
+
+  beginFrame() {
+    for (const p of this.particles) {
+      p.prevX = p.x;
+      p.prevY = p.y;
+    }
   }
 
   update(dt) {}
   draw(ctx) {}
-  resize(w, h) {}
+
+  resize(w, h) {
+    this.width = w;
+    this.height = h;
+
+    // regra mínima universal
+    for (const p of this.particles) {
+      p.prevX = p.x;
+      p.prevY = p.y;
+    }
+  }
+
+  disable() {
+    this.enabled = false;
+  }
 }

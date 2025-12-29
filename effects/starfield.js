@@ -1,5 +1,8 @@
-export class StarfieldEffect {
+import { Effect } from "../core/Effect.js";
+
+export class StarfieldEffect extends Effect {
   constructor(width, height, opts = {}) {
+    super(width, height);
     this.opts = {
       stars: 1400,
       brightStars: 35,
@@ -8,10 +11,6 @@ export class StarfieldEffect {
       seed: Math.random() * 10_000,
       ...opts,
     };
-    this.width = width;
-    this.height = height;
-    this.enabled = true;
-
     this.build();
   }
 

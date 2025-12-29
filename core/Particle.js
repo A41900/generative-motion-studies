@@ -89,6 +89,7 @@ export class Particle {
     this.x += (x - this.x) * t;
     this.y += (y - this.y) * t;
   }
+
   syncPrev() {
     this.prevX = this.x;
     this.prevY = this.y;

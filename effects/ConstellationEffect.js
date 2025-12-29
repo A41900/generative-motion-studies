@@ -1,37 +1,17 @@
-import { starfield } from "./bg.js";
 import { Particle } from "../core/Particle.js";
-import {
-  flowField,
-  noiseField,
-  radialField,
-  randomTemporalField,
-  spaceCurlField,
-  spaceDriftField,
-  vortexTowardsTarget,
-  ribbonField,
-} from "../fields/fields.js";
-import { applyFieldAsImpulse } from "../motion/physics.js";
+import { radialField, spaceCurlField } from "../fields/fields.js";
 import { applyFieldAsDisplacement } from "../motion/visuals.js";
+import { Effect } from "../core/Effect.js";
 
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-export class ConstellationEffect {
+export class ConstellationEffect extends Effect {
   constructor({ width, height, count = 300, connectionRadius = 30 }) {
-    this.width = width;
-    this.height = height;
+    super(width, height);
     this.connectionRadius = connectionRadius;
-
-    this.mouse = null;
-    this.time = 0;
-
     this.particles = [];
 
     const INITIAL_SPEED = 10; // px/s
-
-    //this.buffer = document.createElement("canvas");
-    //this.buffer.width = this.width;
-    //this.buffer.height = this.height;
-    //this.bctx = this.buffer.getContext("2d");
 
     for (let i = 0; i < count; i++) {
       this.particles.push(

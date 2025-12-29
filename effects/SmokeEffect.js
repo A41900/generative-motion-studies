@@ -1,118 +1,65 @@
-import { Particle } from "../core/Particle.js";
-import { createNoise3D } from "../fields/simplex-noise.js";
-import { applyFieldAsDisplacement } from "../motion/visuals.js";
 import { Effect } from "../core/Effect.js";
+import { simplexFlowField } from "../fields/fields.js";
+import { applyFieldAsDisplacement } from "../motion/visuals.js";
+import { wrapParticle } from "../constraints.js";
+import { drawDisplacementFragments, fadeCanvas } from "../render.js";
 
-const noise3D = createNoise3D();
-
-export class SmokeEffect extends Effect {
+export class Effect3 extends Effect {
   constructor(width, height) {
     super(width, height);
-    this.createParticles(400);
-    //this.vectors[i] = simplexFlowField(p,time);
-  }
 
-  draw(ctx) {
-    ctx.save();
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    for (const p of this.particles) {
-      const dx = p.x - p.prevX;
-      const dy = p.y - p.prevY;
-
-      const len = Math.hypot(dx, dy);
-      if (len < 0.001) continue;
-
-      // fragmentação do movimento
-      const steps = Math.ceil(len / 0.6);
-      const ux = dx / steps;
-      const uy = dy / steps;
-
-      // normal perpendicular
-      const nx = -dy / len;
-      const ny = dx / len;
-
-      for (let s = 0; s < steps; s++) {
-        const px = p.prevX + ux * s;
-        const py = p.prevY + uy * s;
-
-        // espalhamento lateral = volume
-        for (let i = -1; i <= 1; i++) {
-          const spread = i * 0.9;
-
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.01)";
-          ctx.lineWidth = 1.3;
-
-          ctx.beginPath();
-          ctx.moveTo(px + nx * spread, py + ny * spread);
-          ctx.lineTo(px + nx * spread + ux * 0.4, py + ny * spread + uy * 0.4);
-          ctx.stroke();
-        }
-      }
-    }
-
-    ctx.restore();
-  }
-  preDraw(ctx) {
-    ctx.save();
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(0,0,0,0.01)";
-    ctx.fillRect(0, 0, this.width, this.height);
-    ctx.restore();
+    // parâmetros artísticos
+    this.microSteps = 25;
+    this.flowSpeed = 60;
   }
 
   update(dt) {
+    // histórico visual (commit do frame anterior)
+    this.beginFrame();
+
+    const baseTime = this.time * 0.1;
+    const subDt = dt / this.microSteps;
+
+    // === MOTION (visual, field-driven) ===
+    for (const p of this.particles) {
+      for (let i = 0; i < this.microSteps; i++) {
+        const field = simplexFlowField(p, baseTime + i * 0.01);
+        if (!field) continue;
+
+        applyFieldAsDisplacement(p, field, this.flowSpeed, subDt);
+
+        wrapParticle(p, this.width, this.height);
+      }
+    }
     this.time += dt;
-    const t = this.time * 0.1;
-    const STEPS = 25;
+  }
+
+  draw(ctx) {
+    // === RENDER ===
+
+    fadeCanvas(ctx, { alpha: 0.04 });
 
     for (const p of this.particles) {
-      // guarda início do frame
-      p.prevX = p.x;
-      p.prevY = p.y;
-
-      for (let i = 0; i < STEPS; i++) {
-        const f = simplexFlowField(p, t + i * 0.01);
-
-        p.x += f.nx * 0.6;
-        p.y += f.ny * 0.6;
-
-        const wrapped =
-          p.x < 0 || p.x > this.width || p.y < 0 || p.y > this.height;
-
-        if (wrapped) {
-          if (p.x < 0) p.x += this.width;
-          if (p.y < 0) p.y += this.height;
-          if (p.x > this.width) p.x -= this.width;
-          if (p.y > this.height) p.y -= this.height;
-
-          // 👇 quebra o trail de forma natural
-          p.prevX = p.x;
-          p.prevY = p.y;
-        }
-      }
+      drawDisplacementFragments(ctx, p, {
+        alpha: 0.015,
+        width: 1.2,
+        step: 0.6,
+        spread: 0.9,
+      });
     }
   }
 
-  resize(width, height) {
-    this.width = width;
-    this.height = height;
+  resize(w, h) {
+    this.width = w;
+    this.height = h;
+
+    for (const p of this.particles) {
+      if (p.x > w || p.y > h) {
+        p.x = Math.random() * w;
+        p.y = Math.random() * h;
+      }
+      p.prevX = p.x;
+      p.prevY = p.y;
+    }
   }
-}
-
-export function simplexFlowField(p, time) {
-  const scale = 0.001;
-  const t = time * 2;
-
-  //const scale = 0.0012;
-  //const angle = noise3D(p.x * scale, p.y * scale, time) * Math.PI * 2;
-  const n = noise3D(p.x * scale, p.y * scale, t);
-  const angle = n * Math.PI * 2;
-
-  return {
-    nx: Math.cos(angle),
-    ny: Math.sin(angle),
-    strength: 200,
-  };
 }

@@ -1,6 +1,6 @@
 Devlog — Generative motion study
 
-# 23/12
+# 23/12 - Fase 1
 
 Today I decided to stop.
 Not because the project is done, but because too many things started to happen at the same time. Particles, text, interaction, layout, effects — everything was working, but it felt noisy.
@@ -8,14 +8,14 @@ I realised I enjoy exploring ideas, but I also need to understand what I’m bui
 This project is teaching me that experimentation is important, but structure is what allows experimentation to continue without becoming chaos.
 I’m leaving this version here as it is — stable, imperfect, and honest.
 
-# 23/12
+# 23/12 - Fase 2
 
 Perdi imenso tempo a tentar dar refactor e o efeito visual piorou em relação à versão anterior... honestamente sinto que fiz zero progressos. Tentei perceber a particula a um nivel fisico e apercebi-me a meio que para criação de UI / efeitos visuais as vezes física complexa nao é a melhor opção. O modelo neste momento está divido entre física e visual. "physicalUpdate" com base na velocidade e "update" com base num alvo/posição (visual). Efeito smooth / lerp é muito mais "bonito" se fizer o update visual mas não é física...
 Estudei conceitos tipo damping, spring, etc.. o que significam entre si como se relacionam entre si e como influenciam as particulas, mas probably estou a utiliza-los sem saber realmente o porquê.
 Mais projeto "estudo" do que propriamente avanço técnico.
 Proxima versão => refatorada e bem divida (talvez esquecer a física e focar me num UI calmo)
 
-# 24/12
+# 24/12 - Fase 3
 
 Entusiasmada com as minhas alterações!!!
 
@@ -52,7 +52,7 @@ mata velocidade ao longo do tempo
 quanto mais alto → movimento morre rápido
 controla “quão viva” a coisa parece
 
-# 25 / 12
+# 25/12 - Fase 4
 
 Mais uma vez, tudo escalou e em vez de simplificar, compliquei.
 
@@ -60,3 +60,17 @@ Sempre que tento "organizar" as coisas acabo por me perder e o que começou com 
 Os chamados “números mágicos” começaram a irritar-me profundamente. Fazer debug tornou-se exaustivo porque eu própria já não tinha uma percepção clara de qual era a unidade mental de cada função. Foi então que nasceu a ideia de um contracto. A noção de engine contract não surgiu por vaidade nem por ambição de framework, mas por necessidade: eu precisava de um padrão que me permitisse olhar para uma função e saber imediatamente em que espaço ela opera, quais são as suas unidades e que tipo de efeito produz. A escolha de wavelength como unidade de escala espacial veio exatamente daí — não porque seja “mais correta”, mas porque é mais compreensível conceptualmente do que um número arbitrário entre 0 e 1. Sim, provavelmente é overkill. Mas foi overkill por frustração.
 Durante este processo tornou-se também evidente que o ficheiro dynamics estava a concentrar demasiados conceitos diferentes. Havia uma mistura constante entre: lógica física e lógica visual. Como resposta a isso, dissolvi dynamics em dois ficheiros distintos: physics e visuals. Não porque o sistema “precisasse”, mas porque eu precisava dessa separação para voltar a pensar com clareza. O problema é que esta minha necessidade de compreender tudo de forma exaustiva fez-me descer vários níveis conceptuais de uma vez. Ao questionar tudo com tanta rigidez, acabei por atrasar o processo e afastar-me do objetivo inicial. Neste momento já nem sei se tudo faz sentido do ponto de vista prático... enfim. Finalmente introduzi delta time real no sistema. Isso resolve um problema estrutural antigo e traz consistência entre máquinas, mesmo que o custo cognitivo tenha sido alto.
 Neste ponto, tornou-se claro que o projeto já não é uma coisa só. A landing page e o estudo de motion estão a puxar em direções diferentes. Para evitar que isto continue a escalar indefinidamente, comecei a ponderar extrair a landing page para um projeto separado. No entanto, o código ainda está demasiado misturado para que essa separação seja feita de forma limpa. Por agora, este repositório continua a ser o espaço de trabalho onde essa separação está a ser explorada e clarificada. A extração só acontecerá quando o background visual e a estrutura estiverem suficientemente estáveis para se sustentarem por si.
+
+# 29/12 - Fase 5
+
+Hoje o foco foi fazer sentido da classe Effect.
+
+Eu queria uma classe “mãe” que fosse um ponto de orientação comum para todos os efeitos. Algo simples, explícito, que evitasse repetição e me ajudasse a manter um raciocínio consistente ao criar efeitos novos. A ideia, no fundo, é tratar funções como ingredientes e os efeitos como receitas. Cada função deve ser pura, reutilizável e conceptualmente clara — nada de lógica inventada localmente só para “fazer funcionar”. Paralelamente, senti necessidade de ter não só ingredientes, mas também regras de fluxo: uma ordem mental que me diga como pensar num efeito, mesmo antes de o escrever.
+Ao rever o código, tornou-se óbvio que ainda estava a misturar demasiados conceitos físicos com visuais. Mesmo o flow que tinha definido na fase 3 estava muito ancorado em teoria física, quando muitos dos efeitos que quero explorar são essencialmente visuais. Em suma, existem dois regimes distintos de movimento, e tentar forçá-los a passar pelo mesmo caminho estava a criar confusão desnecessária.
+No regime físico, o estado da partícula é posição + velocidade. O movimento emerge de forças, passa por integração temporal real (dt) e sofre damping. No regime visual, o estado é essencialmente posição: o movimento é um deslocamento artístico guiado por intenção, sem integração clássica nem conservação de energia real. O “commit” do estado é imediato e o controlo da energia é perceptivo, não físico.
+Apesar disso, ambos os regimes partilham muita coisa: partículas, fields como fonte de intenção, constraints espaciais e o mesmo sistema de render. A diferença não está no início nem no fim do pipeline, mas no meio. Em vez de tentar unificar tudo à força, passei a pensar num fluxo comum com bifurcação consciente:
+
+Input / intenção → aplicação de movimento (física ou visual) → commit de estado → perda de energia (quando existe) → constraints → render.
+
+O objetivo deste refactor é claro: eliminar código repetido dentro dos efeitos, remover funções locais sem significado geral e concentrar toda a lógica reutilizável em ingredientes explícitos, organizados por responsabilidade (fields, motion, constraints, render). Os efeitos deixam de ser mini-sistemas e passam a ser combinações conscientes desses blocos, o que abre espaço para mais experimentação com menos fricção cognitiva.
+Este refactor é uma migração progressiva. A prioridade é manter tudo funcional enquanto o modelo se alinha com esta linguagem mínima. Separar alhos de bugalhos, aceitar que há coisas comuns aos dois regimes, mas que aplicação define o comportamento.
