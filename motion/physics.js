@@ -13,3 +13,8 @@ export function applyFieldAsImpulse(p, field, speedPxPerSec) {
 export function applySpringForce(p, x, y, kPxPerSec2PerPx) {
   p.applyForce((x - p.x) * kPxPerSec2PerPx, (y - p.y) * kPxPerSec2PerPx);
 }
+
+export function applyFieldAsVelocity(p, field, speed) {
+  p.vx = field.nx * field.strength * speed;
+  p.vy = field.ny * field.strength * speed;
+}

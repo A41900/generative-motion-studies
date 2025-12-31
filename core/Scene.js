@@ -22,10 +22,10 @@ export class Scene {
   }
 
   // draw global
-  draw(ctx) {
+  draw(ctx, dt) {
     for (const effect of this.effects) {
       if (effect.preDraw) effect.preDraw(ctx);
-      effect.draw?.(ctx);
+      effect.draw?.(ctx, dt);
     }
   }
 

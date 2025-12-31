@@ -1,5 +1,5 @@
 // Espaço topologicamente contínuo (torus). Quando sai de um lado, entra pelo oposto.
-export function wrapParticle(p, width, height) {
+export function wrapParticle2(p, width, height) {
   const r = p.radius ?? 0;
 
   if (p.x < -r) p.x += width + r * 2;
@@ -48,4 +48,26 @@ function respawn(p) {
   p.x = Math.random() * this.width;
   p.y = Math.random() * this.height;
   p.syncPrev();
+}
+
+export function wrapParticle(p, width, height) {
+  let wrapped = false;
+
+  if (p.x < 0) {
+    p.x += width;
+    wrapped = true;
+  } else if (p.x > width) {
+    p.x -= width;
+    wrapped = true;
+  }
+
+  if (p.y < 0) {
+    p.y += height;
+    wrapped = true;
+  } else if (p.y > height) {
+    p.y -= height;
+    wrapped = true;
+  }
+
+  return wrapped;
 }

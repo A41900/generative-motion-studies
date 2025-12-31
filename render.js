@@ -81,7 +81,7 @@ export function drawDisplacementFragments(ctx, p, opts = {}) {
 
 // Desenho discreto do estado atual da partícula.
 export function drawPoint(ctx, p, opts = {}) {
-  const { radius = p.radius ?? 1, alpha = 1, color = "255,255,255" } = opts;
+  const { radius = p.radius ?? 1, alpha = 1, color = "255,0,0" } = opts;
 
   ctx.fillStyle = `rgba(${color},${alpha})`;
 
@@ -131,4 +131,17 @@ export function fadeCanvas(ctx, opts = {}) {
   ctx.fillStyle = `rgba(${color},${alpha})`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
+}
+
+export function drawSmokePuff(ctx, p, opts = {}) {
+  const { radius = 12, alpha = 0.08, color = "200,200,200" } = opts;
+
+  const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+  g.addColorStop(0, `rgba(${color},${alpha})`);
+  g.addColorStop(1, `rgba(${color},0)`);
+
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+  ctx.fill();
 }

@@ -4,7 +4,6 @@ export class Effect {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-
     this.time = 0;
     this.particles = [];
     this.enabled = true;
@@ -14,6 +13,11 @@ export class Effect {
     for (let i = 0; i < count; i++) {
       this.particles.push(this.spawnParticle());
     }
+  }
+
+  respawn(p) {
+    const fresh = this.spawnParticle();
+    Object.assign(p, fresh);
   }
 
   spawnParticle() {

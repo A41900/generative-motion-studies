@@ -1,14 +1,21 @@
 export class Particle {
-  /**
-   * CONTRATO:
-   * - posição: px
-   * - velocidade: px / s
-   * - força: px / s² × mass
-   */
-  constructor({ x = 0, y = 0, vx = 0, vy = 0, mass = 1, radius = 1 } = {}) {
+  constructor({
+    x = 0,
+    y = 0,
+    z = 0,
+    vx = 0,
+    vy = 0,
+    mass = 1,
+    radius = 1,
+    life = 1,
+    phase,
+    depth,
+  } = {}) {
     // estado geométrico
     this.x = x;
     this.y = y;
+    this.z = z;
+    this.life = life;
 
     this.prevX = this.x;
     this.prevY = this.y;
@@ -23,12 +30,15 @@ export class Particle {
     this.fx = 0;
     this.fy = 0;
 
+    this.phase = phase;
+
     this.mass = mass;
     this.radius = radius;
 
     // estado visual / auxiliar
-    this.depth = Math.random() ** 2.2; // profundidade visual [0, 1]
-    this.life = 1; // vida normalizada [1 → 0]
+    this.depth = Math.random();
+    // ** 2.2; // profundidade visual [0, 1]
+    //this.life = 0; // vida normalizada [1 → 0]
     this.seed = Math.random(); // ruído determinístico
   }
 
@@ -43,16 +53,28 @@ export class Particle {
     this.fy += fy;
   }
 
-  /**
-   * Integra física no tempo.
-   *
-   * CONTRATO:
-   * - dt em segundos
-   * - aplica aceleração e atualiza posição
-   */
+  integrateVelocity(p, dt) {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+  }
+
+  setVelocityFromAngle(angle, speed) {
+    this.vx = Math.cos(angle) * speed;
+    this.vy = Math.sin(angle) * speed;
+  }
+
+  foward(dt) {
+    this.prevX = this.x;
+    this.prevY = this.y;
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+  }
+
+  // F = M * A
   integrate(dt) {
     this.prevX = this.x;
     this.prevY = this.y;
+
     // aceleração = força / massa
     this.vx += (this.fx / this.mass) * dt;
     this.vy += (this.fy / this.mass) * dt;
@@ -78,13 +100,6 @@ export class Particle {
     this.vy *= factor;
   }
 
-  /**
-   * Interpolação visual direta (NÃO física).
-   *
-   * @param {number} x - alvo x (px)
-   * @param {number} y - alvo y (px)
-   * @param {number} t - fator de interpolação [0, 1]
-   */
   lerpTo(x, y, t) {
     this.x += (x - this.x) * t;
     this.y += (y - this.y) * t;

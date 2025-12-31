@@ -3,8 +3,9 @@ import { ConstellationEffect } from "./effects/ConstellationEffect.js";
 import { StarfieldEffect } from "./effects/starfield.js";
 import { FlowField } from "./effects/Flowfield.js";
 import { StreamEffect } from "./effects/StreamEffect.js";
-import { SmokeEffectNew } from "./effects/SmokeEffecNew.js";
 import { SmokeEffect } from "./effects/SmokeEffect.js";
+import { WaterEffect } from "./effects/WaterEffect.js";
+import { Effect5 } from "./effects/Effect5.js";
 
 let viewWidth = 0;
 let viewHeight = 0;
@@ -26,8 +27,8 @@ const effect1 = document.getElementById("effect1-btn");
 effect1.addEventListener("click", () => {
   clearCanvas();
   scene.removeAll();
-  window.effects.smoke.resize(viewWidth, viewHeight);
-  scene.add(window.effects.smoke);
+  window.effects.water.resize(viewWidth, viewHeight);
+  scene.add(window.effects.water);
 });
 
 const effect2 = document.getElementById("effect2-btn");
@@ -51,17 +52,37 @@ const effect4 = document.getElementById("effect4-btn");
 effect4.addEventListener("click", () => {
   clearCanvas();
   scene.removeAll();
-  window.effects.effectSmoke.resize(viewWidth, viewHeight);
-  scene.add(window.effects.effect4);
+  window.effects.effect5.resize(viewWidth, viewHeight);
+  scene.add(window.effects.effect5);
 });
 
-let smoke, stream, starfield, stars, flowfield, effectSmoke;
+window.addEventListener("keydown", (e) => {
+  if (!effect5) return;
+
+  if (e.key === "ArrowRight") {
+    e.preventDefault();
+    effect5.nextPalette();
+  }
+
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    effect5.prevPalette();
+  }
+});
+
+let water, stream, starfield, stars, flowfield, effectSmoke, effect5;
 
 function init() {
   scene = new Scene();
   resizeCanvas();
 
-  smoke = new SmokeEffectNew(viewWidth, viewHeight);
+  //smoke = new SmokeEffect(viewWidth, viewHeight);
+
+  water = new WaterEffect(viewWidth, viewHeight, {
+    fade: 0.025,
+    speed: 90,
+    puffRadius: 16,
+  });
 
   stream = new StreamEffect({
     width: viewWidth,
@@ -70,6 +91,7 @@ function init() {
     speed: 140,
   });
 
+  effect5 = new Effect5({ width: viewWidth, height: viewHeight });
   starfield = new StarfieldEffect(viewWidth, viewHeight, {
     stars: 1600,
     brightStars: 40,
@@ -82,13 +104,11 @@ function init() {
     height: viewHeight,
   });
 
-  effectSmoke = new Effect3(viewWidth, viewHeight);
-
   flowfield = new FlowField({ width: viewWidth, height: viewHeight });
 
   scene.add(stream);
 
-  window.effects = { smoke, stream, starfield, stars, flowfield };
+  window.effects = { water, stream, flowfield, effect5, stars, starfield };
   lastTime = performance.now();
   requestAnimationFrame(animate);
 }
@@ -117,7 +137,7 @@ function animate(time) {
   const dt = Math.min(deltaMs / 1000, 0.033);
 
   scene.update(dt); // dt = 1 por agora
-  scene.draw(ctx);
+  scene.draw(ctx, dt);
   requestAnimationFrame(animate);
 }
 
