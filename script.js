@@ -6,6 +6,7 @@ import { StreamEffect } from "./effects/StreamEffect.js";
 import { SmokeEffect } from "./effects/SmokeEffect.js";
 import { WaterEffect } from "./effects/WaterEffect.js";
 import { Effect5 } from "./effects/Effect5.js";
+import { FlowerEffect } from "./effects/FlowerEffect.js";
 
 let viewWidth = 0;
 let viewHeight = 0;
@@ -23,75 +24,67 @@ function toggleMenu() {
   menu.classList.toggle("hidden");
 }
 
-const effect1 = document.getElementById("effect1-btn");
-effect1.addEventListener("click", () => {
-  clearCanvas();
-  scene.removeAll();
-  window.effects.water.resize(viewWidth, viewHeight);
-  scene.add(window.effects.water);
+const ctxBtn = document.getElementById("ctx-btn");
+ctxBtn.addEventListener("click", () => {
+  const context = document.getElementById("context");
+  context.classList.toggle("hidden");
 });
 
-const effect2 = document.getElementById("effect2-btn");
-effect2.addEventListener("click", () => {
-  clearCanvas();
-  scene.removeAll();
-  window.effects.flowfield.resize(viewWidth, viewHeight);
-  scene.add(window.effects.flowfield);
-});
+const btns = document.querySelectorAll(".btn-base[data-effect]");
+btns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const key = btn.dataset.effect;
+    const effect = window.effects[key];
+    if (!effect) return;
+    clearCanvas();
+    scene.removeAll();
 
-const effect3 = document.getElementById("effect3-btn");
-effect3.addEventListener("click", () => {
-  clearCanvas();
-  scene.removeAll();
-  window.effects.starfield.resize(viewWidth, viewHeight);
-  window.effects.stars.resize(viewWidth, viewHeight);
-  scene.add(window.effects.starfield, window.effects.stars);
-});
-
-const effect4 = document.getElementById("effect4-btn");
-effect4.addEventListener("click", () => {
-  clearCanvas();
-  scene.removeAll();
-  window.effects.effect5.resize(viewWidth, viewHeight);
-  scene.add(window.effects.effect5);
+    effect.resize(viewWidth, viewHeight);
+    scene.add(effect);
+    if (key === "starfield") {
+      window.effects.stars.resize(viewWidth, viewHeight);
+      scene.add(window.effects.stars);
+      return;
+    }
+  });
 });
 
 window.addEventListener("keydown", (e) => {
-  if (!effect5) return;
+  if (!window.effects?.noise) return;
 
   if (e.key === "ArrowRight") {
     e.preventDefault();
-    effect5.nextPalette();
+    noise.nextPalette();
   }
 
   if (e.key === "ArrowLeft") {
     e.preventDefault();
-    effect5.prevPalette();
+    noise.prevPalette();
   }
 });
 
-let water, stream, starfield, stars, flowfield, effectSmoke, effect5;
+let shader, river, starfield, stars, flowfield, smoke, noise, flower;
 
 function init() {
   scene = new Scene();
   resizeCanvas();
 
-  //smoke = new SmokeEffect(viewWidth, viewHeight);
+  smoke = new SmokeEffect(viewWidth, viewHeight);
 
-  water = new WaterEffect(viewWidth, viewHeight, {
+  shader = new WaterEffect(viewWidth, viewHeight, {
     fade: 0.025,
     speed: 90,
     puffRadius: 16,
   });
 
-  stream = new StreamEffect({
+  river = new StreamEffect({
     width: viewWidth,
     height: viewHeight,
     count: 600,
     speed: 140,
   });
 
-  effect5 = new Effect5({ width: viewWidth, height: viewHeight });
+  noise = new Effect5({ width: viewWidth, height: viewHeight });
   starfield = new StarfieldEffect(viewWidth, viewHeight, {
     stars: 1600,
     brightStars: 40,
@@ -106,9 +99,19 @@ function init() {
 
   flowfield = new FlowField({ width: viewWidth, height: viewHeight });
 
-  scene.add(stream);
+  flower = new FlowerEffect({ width: viewHeight, height: viewHeight });
 
-  window.effects = { water, stream, flowfield, effect5, stars, starfield };
+  scene.add(flower);
+
+  window.effects = {
+    shader,
+    river,
+    flowfield,
+    noise,
+    stars,
+    starfield,
+    smoke,
+  };
   lastTime = performance.now();
   requestAnimationFrame(animate);
 }
@@ -158,7 +161,7 @@ function clearCanvas() {
   ctx.restore();
 }
 
-const buttons = document.querySelectorAll(".menu .btn");
+const buttons = document.querySelectorAll(".menu .btn[data-effect]");
 const panels = document.querySelectorAll(".panel");
 
 buttons.forEach((btn) => {
